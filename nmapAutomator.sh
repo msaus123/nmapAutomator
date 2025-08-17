@@ -623,10 +623,10 @@ reconRecommend() {
                                 if echo "${line}" | grep -q ssl/http; then
                                         urlType='https://'
                                         echo "sslscan \"${HOST}\" | tee \"recon/sslscan_${HOST}_${port}.txt\""
-                                        echo "nikto -host \"${urlType}${HOST}:${port}\" -ssl | tee \"recon/nikto_${HOST}_${port}.txt\""
+                                        echo "nikto -host \"${urlType}${HOST}:${port}\" -ssl -maxtime 600 | tee \"recon/nikto_${HOST}_${port}.txt\""
                                 else
                                         urlType='http://'
-                                        echo "nikto -host \"${urlType}${HOST}:${port}\" | tee \"recon/nikto_${HOST}_${port}.txt\""
+                                        echo "nikto -host \"${urlType}${HOST}:${port}\" -maxtime 600 | tee \"recon/nikto_${HOST}_${port}.txt\""
                                 fi
                                 if type ffuf >/dev/null 2>&1; then
                                         extensions="$(echo 'index' >./index && ffuf -s -w ./index:FUZZ -mc '200,302' -e '.asp,.aspx,.html,.jsp,.php' -u "${urlType}${HOST}:${port}/FUZZ" 2>/dev/null | awk -vORS=, -F 'index' '{print $2}' | sed 's/.$//' && rm ./index)"
